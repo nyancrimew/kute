@@ -50,22 +50,21 @@ allprojects {
             from(sourceSets["main"].allSource)
         }
 
+        val dokkaJavadoc by creating(DokkaTask::class) {
+            outputFormat = "javadoc"
+            outputDirectory = "$buildDir/javadoc"
+        }
+
         val javadocJar by creating(Jar::class) {
-            dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+            dependsOn(dokkaJavadoc)
             classifier = "javadoc"
-            from(tasks["javadoc"])
+            from("$buildDir/javadoc")
         }
 
         artifacts {
             add("archives", sourcesJar)
             add("archives", javadocJar)
         }
-    }
-}
-
-dependencies {
-    subprojects.forEach {
-        compile(project(it.path))
     }
 }
 
