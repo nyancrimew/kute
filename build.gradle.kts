@@ -4,16 +4,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     base
-    `maven-publish`
+    maven
     kotlin("jvm") version "1.3.50"
     id("org.jetbrains.dokka") version "0.10.0"
 }
 
 allprojects {
-    group = "de.letescape.kute"
-    version = "0.0.1"
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
+    group = "de.letescape.kute"
+    version = "0.0.1"
 
     repositories {
         jcenter()
@@ -43,6 +43,24 @@ allprojects {
         }
     }
 
+    tasks {
+        val sourcesJar by creating(Jar::class) {
+            dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+            classifier = "sources"
+            from(sourceSets["main"].allSource)
+        }
+
+        val javadocJar by creating(Jar::class) {
+            dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+            classifier = "javadoc"
+            from(tasks["javadoc"])
+        }
+
+        artifacts {
+            add("archives", sourcesJar)
+            add("archives", javadocJar)
+        }
+    }
 }
 
 dependencies {
@@ -56,9 +74,5 @@ tasks {
         outputFormat = "html"
         outputDirectory = "$buildDir/dokka"
         subProjects = listOf("core")
-    }
-
-    val jar by getting(Jar::class) {
-        from(configurations.compile.map { if(it.isDirectory) it else zipTree(it) })
     }
 }
