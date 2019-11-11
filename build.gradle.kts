@@ -72,6 +72,6 @@ tasks {
     val dokka by getting(DokkaTask::class) {
         outputFormat = "html"
         outputDirectory = "$buildDir/dokka"
-        subProjects = listOf("core")
+        subProjects = listOf("core", "ktor")
     }
 }
