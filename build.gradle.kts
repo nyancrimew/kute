@@ -44,10 +44,21 @@ allprojects {
     }
 
 }
+
+dependencies {
+    subprojects.forEach {
+        compile(project(it.path))
+    }
+}
+
 tasks {
     val dokka by getting(DokkaTask::class) {
         outputFormat = "html"
         outputDirectory = "$buildDir/dokka"
         subProjects = listOf("core")
+    }
+
+    val jar by getting(Jar::class) {
+        from(configurations.compile.map { if(it.isDirectory) it else zipTree(it) })
     }
 }
