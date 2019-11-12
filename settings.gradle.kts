@@ -10,3 +10,5 @@ rootProject.name = "kute"
 
 include("core")
 include("ktor")
+include("preferences")
+include("preferences:api")
